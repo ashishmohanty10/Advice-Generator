@@ -21,6 +21,20 @@ const App = () => {
     });
   }
 
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div>
       <div className="container flex items-center justify-center w-full h-screen">
@@ -33,18 +47,22 @@ const App = () => {
             </div>
 
             <div className="mb-2 text-2xl font-bold text-center text-lightCyan">
-              {advice}
+              "{advice}"
             </div>
 
             <div className="mb-5">
-              <img src={DesktopDivider} alt="" />
+              {screenSize < 400 ? (
+                <img src={MobileDivider} alt="" />
+              ) : (
+                <img src={DesktopDivider} alt="" />
+              )}
             </div>
 
-            <div
-              onClick={handleAdvice}
-              className="absolute p-5 rounded-full cursor-pointer top-[85%] bg-neonGreen hover:shadow-2xl hover:shadow-neonGreen"
-            >
-              <img src={ICON} alt="" />
+            <div className="relative group top-2" onClick={handleAdvice}>
+              <div className="absolute duration-200 rounded-full -inset-0 bg-neonGreen group-hover:blur "></div>
+              <button className="relative p-5 transform rounded-full cursor-pointer bg-neonGreen">
+                <img src={ICON} alt="" />
+              </button>
             </div>
           </div>
         </div>
