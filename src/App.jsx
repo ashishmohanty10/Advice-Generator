@@ -41,7 +41,7 @@ const App = () => {
         <div className="bg-darkGrayishBlue w-[350px] h-[250px] md:w-[600px] rounded-lg relative">
           <div className="flex flex-col items-center justify-center p-5">
             <div className="mb-4">
-              <h3 className="text-sm font-semibold text-neonGreen">
+              <h3 className="text-sm font-semibold tracking-[.25rem] text-neonGreen">
                 ADVICE #{id}
               </h3>
             </div>
