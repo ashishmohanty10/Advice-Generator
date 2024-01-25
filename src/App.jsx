@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import ICON from "./assets/icon-dice.svg";
+import MobileDivider from "./assets/pattern-divider-mobile.svg";
+import DesktopDivider from "./assets/desktop.svg";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [advice, setAdvice] = useState();
+  const [id, setId] = useState();
+  useEffect(() => {
+    Axios.get("https://api.adviceslip.com/advice").then((res) => {
+      setAdvice(res.data.slip.advice);
+      setId(res.data.slip.id);
+    });
+  }, [advice]);
+
+  async function handleAdvice() {
+    Axios.get("https://api.adviceslip.com/advice").then((res) => {
+      setId(res.data.slip.id);
+      setAdvice(res.data.slip.advice);
+    });
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <div className="container flex items-center justify-center w-full h-screen">
+        <div className="bg-darkGrayishBlue w-[350px] h-[250px] md:w-[600px] rounded-lg relative">
+          <div className="flex flex-col items-center justify-center p-5">
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-neonGreen">
+                ADVICE #{id}
+              </h3>
+            </div>
 
-export default App
+            <div className="mb-2 text-2xl font-bold text-center text-lightCyan">
+              {advice}
+            </div>
+
+            <div className="mb-5">
+              <img src={DesktopDivider} alt="" />
+            </div>
+
+            <div
+              onClick={handleAdvice}
+              className="absolute p-5 rounded-full cursor-pointer top-[85%] bg-neonGreen hover:shadow-2xl hover:shadow-neonGreen"
+            >
+              <img src={ICON} alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
