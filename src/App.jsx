@@ -1,71 +1,70 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
-import ICON from "./assets/icon-dice.svg";
-import MobileDivider from "./assets/pattern-divider-mobile.svg";
-import DesktopDivider from "./assets/desktop.svg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import MobileDivider from "/mobile.svg";
+import DesktopDivider from "/desktop.svg";
+import Icon from "/icon-dice.svg";
 
 const App = () => {
-  const [advice, setAdvice] = useState();
-  const [id, setId] = useState();
-  useEffect(() => {
-    Axios.get("https://api.adviceslip.com/advice").then((res) => {
-      setAdvice(res.data.slip.advice);
-      setId(res.data.slip.id);
-    });
-  }, [advice]);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-  async function handleAdvice() {
-    Axios.get("https://api.adviceslip.com/advice").then((res) => {
-      setId(res.data.slip.id);
-      setAdvice(res.data.slip.advice);
-    });
-  }
+  const handleFetch = () => {
+    axios
+      .get("https://api.adviceslip.com/advice")
+      .then((res) => {
+        console.log(res.data);
+        setData(res.data);
+        setError(null);
+      })
+      .catch((error) => {
+        setError("Error while fetching data");
+      });
+  };
 
   const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   useEffect(() => {
-    const handleResize = () => {
+    const handleScreen = () => {
       setScreenSize(window.innerWidth);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("window resize", handleScreen);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    return window.removeEventListener("window resize", handleScreen);
+  });
 
   return (
-    <div>
-      <div className="container flex items-center justify-center w-full h-screen">
-        <div className="bg-darkGrayishBlue w-[350px] h-[250px] md:w-[600px] rounded-lg relative">
-          <div className="flex flex-col items-center justify-center p-5">
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold tracking-[.25rem] text-neonGreen">
-                ADVICE #{id}
-              </h3>
-            </div>
-
-            <div className="mb-2 text-2xl font-bold text-center text-lightCyan">
-              "{advice}"
-            </div>
-
-            <div className="mb-5">
-              {screenSize < 400 ? (
-                <img src={MobileDivider} alt="" />
-              ) : (
-                <img src={DesktopDivider} alt="" />
-              )}
-            </div>
-
-            <div className="relative group top-2" onClick={handleAdvice}>
-              <div className="absolute duration-200 rounded-full -inset-0 bg-neonGreen group-hover:blur "></div>
-              <button className="relative p-5 transform rounded-full cursor-pointer bg-neonGreen">
-                <img src={ICON} alt="" />
-              </button>
-            </div>
-          </div>
+    <div className="container w-full h-screen flex justify-center items-center">
+      <div className="w-[500px] h-[300px] bg-darkGrayishBlue rounded-lg p-10 flex flex-col justify-evenly relative">
+        <div>
+          {data ? (
+            <>
+              <p className="text-neonGreen font-semibold text-sm text-center mb-5">
+                ADVICE #{data.slip.id}
+              </p>
+              <p className="font-medium text-lightCyan text-xl text-center">
+                {data.slip.advice}
+              </p>
+            </>
+          ) : (
+            <p>{error}</p>
+          )}
         </div>
+
+        <div>
+          {screenSize < 400 ? (
+            <img src={MobileDivider} />
+          ) : (
+            <img src={DesktopDivider} />
+          )}
+        </div>
+
+        <button
+          onClick={handleFetch}
+          className="p-5 bg-neonGreen w-fit rounded-full absolute top-64 left-52"
+        >
+          <img src={Icon} alt="" />
+        </button>
       </div>
     </div>
   );
